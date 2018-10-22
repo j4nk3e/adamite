@@ -1,0 +1,13 @@
+name: lights.cr
+version: 0.1.0
+
+authors:
+  - juumixx <juumixx@gmail.com>
+
+targets:
+  lights.cr:
+    main: src/lights.cr.cr
+
+crystal: 0.26.1
+
+license: MIT
