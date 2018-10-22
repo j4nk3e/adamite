@@ -1,15 +1,15 @@
 require "./bulbstate"
 
 class Bulb
-  @name : String
-  @type : String
-  @sw_version : String
-  @model_id : String
-  @unique_id : String
-  @state : BulbState
+  getter id : String
+  getter name : String
+  getter type : String
+  getter sw_version : String
+  getter model_id : String
+  getter unique_id : String
+  getter state : BulbState
 
-  def initialize(id : String, data : Hash(String, JSON::Any))
-    @id = id
+  def initialize(@id : String, data : Hash(String, JSON::Any))
     @name = data["name"].as_s
     @type = data["type"].as_s
     @sw_version = data["swversion"].as_s

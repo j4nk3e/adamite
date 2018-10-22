@@ -37,17 +37,17 @@ class BulbState
     RED    = 65535
   end
 
-  @on = false
-  @bri : Int32?
-  @ct : Int32?
-  @xy = [] of Float64
-  @hue : Int32?
-  @sat : Int32?
-  @transition_time : Int32?
-  @alert : String?
-  @color_mode : String?
-  @effect : String?
-  @reachable = false
+  property on = false
+  property bri : Int32?
+  property ct : Int32?
+  property xy = [] of Float64
+  property hue : Int32?
+  property sat : Int32?
+  property transition_time : Int32?
+  property alert : String?
+  property color_mode : String?
+  property effect : String?
+  property reachable = false
 
   def initialize(data : Hash(String, JSON::Any))
     data = {} of String => JSON::Any if data == nil
@@ -204,18 +204,17 @@ class BulbState
   end
 
   def data
-    data = {} of String => JSON::Any
-    data["on"] = @on unless @on.nil?
-    data["bri"] = @bri if @bri
-    data["hue"] = @hue if @hue
-    data["sat"] = @sat if @sat
-    data["xy"] = @xy if @xy
-    data["ct"] = @ct if @ct
-    data["alert"] = @alert if @alert
-    data["effect"] = @effect if @effect
-    data["colormode"] = @color_mode if @color_mode
-    data["reachable"] = @reachable unless @reachable.nil?
-    data["transitiontime"] = @transition_time if @transition_time
-    data
+    data = {"on"             => @on,
+            "bri"            => @bri,
+            "hue"            => @hue,
+            "sat"            => @sat,
+            "xy"             => @xy,
+            "ct"             => @ct,
+            "alert"          => @alert,
+            "effect"         => @effect,
+            "colormode"      => @color_mode,
+            "transitiontime" => @transition_time,
+    }
+    data.reject { |k, v| v.nil? }
   end
 end

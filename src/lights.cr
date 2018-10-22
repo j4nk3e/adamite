@@ -20,7 +20,7 @@ module Lights
     @bridges = [] of Bridge
 
     def http
-      Crest::Resource.new(@address, headers: {"Content-Type" => "application/json"}, logging: true)
+      Crest::Resource.new(@address, headers: {"Content-Type" => "application/json"}, logging: false)
     end
 
     def discover_hubs
@@ -122,7 +122,7 @@ module Lights
     end
 
     def set_bulb_state(id, state)
-      put "lights/#{id}/state", state
+      put "lights/#{id}/state", state.data
     end
 
     def set_group_state(id, state)
@@ -186,30 +186,31 @@ module Lights
     end
 
     private def put(path, data : Hash)
-      raise UsernameException unless @username
-      response = http["/api/#{@username}/#{path}"].put data.to_json
+      raise UsernameException.new unless @username
+      puts data.to_json
+      response = http["/api/#{@username}/#{path}"].put form: data.to_json
       result = JSON.parse(response.body)
-      if result.first.kind_of?(Hash) && result.first.has_key?("error")
-        process_error result.first
+      if (a = result.as_a?) && (h = a.first.as_h?) && h.has_key?("error")
+        process_error h
       end
       result
     end
 
     private def post(path, data : Hash)
-      raise UsernameException unless @username
-      response = http["/api/#{@username}/#{path}"].post data.to_json
+      raise UsernameException.new unless @username
+      response = http["/api/#{@username}/#{path}"].post form: data.to_json
       result = JSON.parse(response.body)
-      if result.first.kind_of?(Hash) && result.first.has_key?("error")
-        process_error result.first
+      if (a = result.as_a?) && (h = a.first.as_h?) && h.has_key?("error")
+        process_error h
       end
       result
     end
 
     private def delete(path)
-      raise UsernameException unless @username
+      raise UsernameException.new unless @username
       response = http["/api/#{@username}/#{path}"].delete
       result = JSON.parse(response.body)
-      if result.first.kind_of?(Hash) && result.first.has_key?("error")
+      if (a = result.as_a?) && (h = a.first.as_h?) && h.has_key?("error")
         process_error result.first
       end
       result
@@ -246,7 +247,13 @@ module Lights
 
     class List < Login
       def run
-        puts lights.request_bulb_list
+        lights.request_bulb_list.each do |bulb|
+          puts "#{bulb.id} #{bulb.name}"
+          if bulb.name == "Stehlampe"
+            bulb.state.on = false
+            lights.set_bulb_state bulb.id, bulb.state
+          end
+        end
       end
     end
   end

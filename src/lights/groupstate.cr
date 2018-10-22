@@ -1,6 +1,8 @@
 require "./bulbstate"
 
 class GroupState < BulbState
+  property scene : String?
+
   def initialize(data : Hash)
     super(data)
     set_scene data["scene"] if data["scene"]
@@ -19,8 +21,10 @@ class GroupState < BulbState
   end
 
   def data
-    data = BulbState.instance_method(:data).bind(self).call
-    data["scene"] = @scene if @scene
+    data = super
+    if s = @scene
+      data["scene"] = s
+    end
     data
   end
 end
