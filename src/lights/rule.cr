@@ -1,10 +1,5 @@
-require "lights/hobject"
-
-class Rule < HObject
-  attr_reader :id, :name, :owner, :created,
-                :last_triggered, :times_triggered,
-                :status, :conditions, :actions
-  def initialize( id = nil, data = {} )
+class Rule
+  def initialize(id : String, data : Hash = nil)
     @id = id
     @name = data["name"]
     @owner = data["owner"]
@@ -17,7 +12,7 @@ class Rule < HObject
   end
 
   def data
-    data = {}
+    data = {} of String => HObject
     data["name"] = @name if @name
     data["owner"] = @owner if @owner
     data["created"] = @created if @created

@@ -1,10 +1,8 @@
-require "lights/schedule"
-require "lights/list"
+require "./schedule"
 
-class ScheduleList < List
-  def initialize(data = {})
+class ScheduleList
+  def initialize(data : Hash)
     super
-    data.each{|id,value| @list << Schedule.new(id,value)} if data
+    data.each { |id, value| @list << Schedule.new(id, value) } if data
   end
 end
-

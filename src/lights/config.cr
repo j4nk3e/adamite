@@ -1,15 +1,7 @@
-require "lights/userlist"
-require "lights/hobject"
+require "./userlist"
 
-class HueConfig < HObject
-  attr_reader :name, :zigbee_channel, :mac, :dhcp,
-                :ip_address, :netmask, :gateway,
-                :proxy_address, :proxy_port, :utc,
-                :local_time, :time_zone, :whitelist,
-                :swversion, :api_version, :sw_update,
-                :link_button, :portal_services,
-                :portal_connection, :portal_state
-  def initialize(data = {})
+class HueConfig
+  def initialize(data : Hash)
     @name = data["name"]
     @zigbee_channel = data["zigbeechannel"]
     @mac = data["mac"]
@@ -33,7 +25,7 @@ class HueConfig < HObject
   end
 
   def data
-    data = {}
+    data = {} of String => Any
     data["name"] = @name if @name
     data["zigbeechannel"] = @zigbee_channel if @zigbee_channel
     data["mac"] = @mac if @mac
@@ -57,4 +49,3 @@ class HueConfig < HObject
     data
   end
 end
-

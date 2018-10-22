@@ -1,8 +1,5 @@
-require "lights/hobject"
-
-class Scene < HObject
-  attr_accessor :id, :name, :active, :lights, :recycle, :transition_time
-  def initialize(id = nil,data = {})
+class Scene
+  def initialize(id : String, data : Hash = nil)
     @id = id
     @name = data["name"]
     @active = data["active"]
@@ -12,7 +9,7 @@ class Scene < HObject
   end
 
   def data
-    data = {}
+    data = {} of String => Any
     data["name"] = @name if @name
     data["active"] = @active unless @active.nil?
     data["lights"] = @lights if @lights
@@ -21,4 +18,3 @@ class Scene < HObject
     data
   end
 end
-

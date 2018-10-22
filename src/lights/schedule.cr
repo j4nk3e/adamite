@@ -1,11 +1,7 @@
-require "lights/command"
-require "lights/hobject"
+require "./command"
 
-class Schedule < HObject
-  attr_reader :id, :name, :time, :status,
-                :description, :local_time,
-                :created, :command
-  def initialize(id,data = {})
+class Schedule
+  def initialize(id, data : Hash)
     @id = id
     @name = data["name"]
     @time = data["time"]
@@ -21,7 +17,7 @@ class Schedule < HObject
   end
 
   def data
-    data = {}
+    data = {} of String => Any
     data["name"] = @name if @name
     data["time"] = @time if @time
     data["status"] = @status if @status
@@ -32,4 +28,3 @@ class Schedule < HObject
     data
   end
 end
-

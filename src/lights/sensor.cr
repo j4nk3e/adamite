@@ -1,5 +1,4 @@
-class SensorState < HObject
-  attr_reader :last_updated
+class SensorState
   def initialize(data)
     @last_updated = data["lastupdated"]
     @daylight = data["daylight"]
@@ -7,7 +6,7 @@ class SensorState < HObject
   end
 
   def data
-    data = {}
+    data = {} of String => Any
     data["lastupdated"] = @last_updated if @last_updated
     data["daylight"] = @daylight unless @daylight.nil?
     data["buttonevent"] = @button_event if @button_event
@@ -15,11 +14,8 @@ class SensorState < HObject
   end
 end
 
-class Sensor < HObject
-  attr_reader :id, :data, :name, :type, :model_id,
-                :manufacturer_name, :unique_id,
-                :sw_version, :state
-  def initialize( id, data = {} )
+class Sensor
+  def initialize(id, data : Hash)
     @id = id
     @name = data["name"]
     @type = data["type"]
@@ -30,9 +26,9 @@ class Sensor < HObject
     @config = data["config"]
     @state = SensorState.new(data["state"])
   end
-  
+
   def data
-    data = {}
+    data = {} of String => Any
     data["name"] = @name if @name
     data["type"] = @type if @type
     data["modelid"] = @model_id if @model_id

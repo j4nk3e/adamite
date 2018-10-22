@@ -11,3 +11,11 @@ targets:
 crystal: 0.26.1
 
 license: MIT
+
+dependencies:
+  crest:
+    github: mamantoha/crest
+
+  cli:
+    github: mosop/cli
+

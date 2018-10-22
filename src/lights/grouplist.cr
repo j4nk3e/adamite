@@ -1,10 +1,8 @@
-require "lights/group"
-require "lights/list"
+require "./group"
 
-class GroupList < List
-  def initialize(data = {})
+class GroupList
+  def initialize(data : Hash)
     super
-    data.each{|id,value| @list << Group.new(id,value)} if data
+    data.each { |id, value| @list << Group.new(id, value) } if data
   end
 end
-

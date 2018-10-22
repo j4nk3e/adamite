@@ -1,17 +1,14 @@
-require "lights/config"
-require "lights/bulblist"
-require "lights/grouplist"
-require "lights/scenelist"
-require "lights/rulelist"
-require "lights/schedulelist"
-require "lights/sensorlist"
-require "lights/hobject"
+require "./config"
+require "./bulblist"
+require "./grouplist"
+require "./scenelist"
+require "./rulelist"
+require "./schedulelist"
+require "./sensorlist"
 
-class Datastore < HObject
-  attr_reader :lights, :groups, :config, :rules,
-                :scenes, :schedules, :sensors
-  def initialize(data = {})
-    @lights = BulbList.new(data["lights"]) 
+class Datastore
+  def initialize(data : Hash)
+    @lights = BulbList.new(data["lights"])
     @groups = GroupList.new(data["groups"])
     @config = HueConfig.new(data["config"])
     @schedules = ScheduleList.new(data["schedules"])
@@ -24,14 +21,14 @@ class Datastore < HObject
     @lights.list + \
       @groups.list + \
       [@config] + \
-      @schedules.list + \
-      @scenes.list + \
-      @rules.list + \
-      @sensors.list
+        @schedules.list + \
+        @scenes.list + \
+        @rules.list + \
+        @sensors.list
   end
 
   def data
-    data = {}
+    data = {} of String => Any
     data["lights"] = @lights.data if !@lights.data.empty?
     data["groups"] = @groups.data if !@groups.data.empty?
     data["config"] = @config.data if !@config.data.empty?
@@ -42,4 +39,3 @@ class Datastore < HObject
     data
   end
 end
-

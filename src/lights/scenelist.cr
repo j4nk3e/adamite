@@ -1,10 +1,8 @@
-require "lights/scene"
-require "lights/list"
+require "./scene"
 
-class SceneList < List
-  def initialize(data = {})
+class SceneList
+  def initialize(data : Hash)
     super
-    data.each{|id,value| @list << Scene.new(id,value)} if data
+    data.each { |id, value| @list << Scene.new(id, value) } if data
   end
 end
-

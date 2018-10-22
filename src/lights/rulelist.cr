@@ -1,10 +1,8 @@
-require "lights/rule"
-require "lights/list"
+require "./rule"
 
-class RuleList < List
-  def initialize(data = {})
+class RuleList
+  def initialize(data : Hash)
     super
-    data.each{|id,value| @list << Rule.new(id,value)} if data
+    data.each { |id, value| @list << Rule.new(id, value) } if data
   end
 end
-

@@ -1,22 +1,10 @@
-require "lights/hobject"
+require "json"
 
-class Bridge < HObject
-
-  attr_reader :id, :ip, :name, :mac
-  def initialize(data = {})
-    @id = data["id"]
-    @ip = data["internalipaddress"]
-    @mac = data["macaddress"]
-    @name = data["name"]
-  end
-
-  def data
-    data = {}
-    data["id"] = @id if @id
-    data["internalipaddress"] = @ip if @ip
-    data["macaddress"] = @mac if @mac
-    data["name"] = @name if @name
-    data
-  end
+class Bridge
+  JSON.mapping(
+    id: String,
+    internalipaddress: String,
+    macaddress: String?,
+    name: String?
+  )
 end
-

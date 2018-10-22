@@ -1,13 +1,15 @@
-require "lights/bulbstate"
+require "./bulbstate"
 
 class GroupState < BulbState
-  attr_reader :scene
-  def initialize(data={})
+  def initialize(data : Hash)
     super(data)
     set_scene data["scene"] if data["scene"]
   end
 
-  def scene=(value) set_scene(value) end
+  def scene=(value)
+    set_scene(value)
+  end
+
   def set_scene(value)
     if value.class == String
       @scene = value
