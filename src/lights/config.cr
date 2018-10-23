@@ -1,51 +1,46 @@
-require "./userlist"
+require "./user"
 
 class HueConfig
-  def initialize(data : Hash)
-    @name = data["name"]
-    @zigbee_channel = data["zigbeechannel"]
-    @mac = data["mac"]
-    @dhcp = data["dhcp"]
-    @ip_address = data["ipaddress"]
-    @netmask = data["netmask"]
-    @gateway = data["gateway"]
-    @proxy_address = data["proxyaddress"]
-    @proxy_port = data["proxyport"]
-    @utc = data["UTC"]
-    @local_time = data["localtime"]
-    @time_zone = data["timezone"]
-    @whitelist = UserList.new(data["whitelist"])
-    @sw_version = data["swversion"]
-    @api_version = data["apiversion"]
-    @sw_update = data["swupdate"]
-    @link_button = data["linkbutton"]
-    @portal_services = data["portalservices"]
-    @portal_connection = data["portalconnection"]
-    @portal_state = data["portalstate"]
-  end
+  include JSON::Serializable
 
-  def data
-    data = {} of String => Any
-    data["name"] = @name if @name
-    data["zigbeechannel"] = @zigbee_channel if @zigbee_channel
-    data["mac"] = @mac if @mac
-    data["dhcp"] = @dhcp unless @dhcp.nil?
-    data["ipaddress"] = @ip_address if @ip_address
-    data["netmask"] = @netmask if @netmask
-    data["gateway"] = @gateway if @gateway
-    data["proxyaddress"] = @proxy_address if @proxy_address
-    data["proxyport"] = @proxy_port if @proxy_port
-    data["UTC"] = @utc if @utc
-    data["localtime"] = @local_time if @local_time
-    data["timezone"] = @time_zone if @time_zone
-    data["whitelist"] = @whitelist.data unless @whitelist.data.empty?
-    data["swversion"] = @sw_version if @sw_version
-    data["apiversion"] = @api_version if @api_version
-    data["swupdate"] = @sw_update unless @sw_update.nil?
-    data["linkbutton"] = @link_button unless @link_button.nil?
-    data["portalservices"] = @portal_services unless @portal_services.nil?
-    data["portalconnection"] = @portal_connection if @portal_connection
-    data["portalstate"] = @portal_state unless @portal_state.nil?
-    data
-  end
+  @[JSON::Field]
+  property name : String?
+  @[JSON::Field]
+  property zigbeechannel : Int32?
+  @[JSON::Field]
+  property mac : String?
+  @[JSON::Field]
+  property dhcp : Bool?
+  @[JSON::Field]
+  property ipaddress : String?
+  @[JSON::Field]
+  property netmask : String?
+  @[JSON::Field]
+  property gateway : String?
+  @[JSON::Field]
+  property proxyaddress : String?
+  @[JSON::Field]
+  property proxyport : Int32?
+  @[JSON::Field]
+  property utc : String?
+  @[JSON::Field(converter: Time::Format.new "%Y-%m-%dT%H:%M:%S")]
+  property localtime : Time?
+  @[JSON::Field]
+  property timezone : String?
+  @[JSON::Field]
+  property whitelist : Hash(String, User)?
+  @[JSON::Field]
+  property swversion : JSON::Any
+  @[JSON::Field]
+  property apiversion : String?
+  @[JSON::Field]
+  property swupdate : JSON::Any
+  @[JSON::Field]
+  property linkbutton : Bool?
+  @[JSON::Field]
+  property portalservices : Bool?
+  @[JSON::Field]
+  property portalconnection : String?
+  @[JSON::Field]
+  property portalstate : JSON::Any
 end

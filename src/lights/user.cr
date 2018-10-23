@@ -1,16 +1,12 @@
 class User
-  def initialize(id : String, data : Hash)
-    @id = id
-    @name = data["name"]
-    @create_date = data["create date"]
-    @last_use_date = data["last use date"]
-  end
+  include JSON::Serializable
 
-  def data
-    data = {} of String => Any
-    data["name"] = @name if @name
-    data["create date"] = @create_date if @create_date
-    data["last use date"] = @last_use_date if @last_use_date
-    data
-  end
+  @[JSON::Field]
+  property name : String
+
+  @[JSON::Field(key: "create date", converter: Time::Format.new "%Y-%m-%dT%H:%M:%S")]
+  property create_date : Time
+
+  @[JSON::Field(key: "last use date", converter: Time::Format.new "%Y-%m-%dT%H:%M:%S")]
+  property last_use_date : Time
 end

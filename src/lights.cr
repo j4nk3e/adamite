@@ -5,6 +5,7 @@ require "cli"
 
 require "./lights/bridge"
 require "./lights/bulb"
+require "./lights/config"
 require "./lights/exception"
 require "./lights/groupstate"
 require "./lights/group"
@@ -59,7 +60,7 @@ module Lights
     end
 
     def request_config
-      get "config"
+      HueConfig.from_json get("config")
     end
 
     def add_bulb(id, bulb_data)
@@ -111,10 +112,6 @@ module Lights
 
     def request_scene_list
       get "scenes"
-    end
-
-    def request_config
-      get "config"
     end
 
     def request_rules
@@ -256,12 +253,14 @@ module Lights
       def run
         lights.request_bulb_list.each do |id, bulb|
           puts "#{id} #{bulb.name}"
-          if bulb.name == "Stehlampe"
-            bulb.state.on = true
-            bulb.state.reachable = nil
-            lights.set_bulb_state id, bulb.state
-          end
         end
+      end
+    end
+
+    class Config < Login
+      def run
+        config = lights.request_config
+        puts config.to_pretty_json
       end
     end
 
