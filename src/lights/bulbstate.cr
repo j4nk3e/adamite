@@ -67,6 +67,9 @@ class BulbState
     self.initialize parser
   end
 
+  def initialize(@on : Bool)
+  end
+
   def color_mode=(value)
     set_color_mode(value)
   end
