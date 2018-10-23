@@ -265,18 +265,31 @@ module Lights
       end
     end
 
-    class Switch < Login
+    class Off < Login
       class Options
-        bool "-o", desc: "On/Off"
         string "-n", desc: "Name of the light"
       end
 
       def run
-        options
         lights.request_bulb_list.each do |id, bulb|
-          puts "#{id} #{bulb.name}"
+          puts "#{id} #{bulb.name} #{bulb.state.to_json}"
           if bulb.name.starts_with? options.n
-            lights.set_bulb_state id, BulbState.new options.o?
+            lights.set_bulb_state id, BulbState.new false
+          end
+        end
+      end
+    end
+
+    class On < Off
+      class Options
+        string "-b", desc: "Brightness", default: "255"
+      end
+
+      def run
+        lights.request_bulb_list.each do |id, bulb|
+          puts "#{id} #{bulb.name} #{bulb.state.to_json}"
+          if bulb.name.starts_with? options.n
+            lights.set_bulb_state id, BulbState.new true, options.b.to_i
           end
         end
       end

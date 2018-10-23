@@ -70,6 +70,9 @@ class BulbState
   def initialize(@on : Bool)
   end
 
+  def initialize(@on : Bool, @bri : Int32)
+  end
+
   def color_mode=(value)
     set_color_mode(value)
   end
