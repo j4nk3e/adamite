@@ -1,4 +1,6 @@
 class BulbState
+  include JSON::Serializable
+
   MAX_CT              =   500
   MIN_CT              =   153
   MAX_BRI             =   255
@@ -37,35 +39,32 @@ class BulbState
     RED    = 65535
   end
 
-  property on = false
+  @[JSON::Field]
+  property on : Bool
+  @[JSON::Field]
   property bri : Int32?
+  @[JSON::Field]
   property ct : Int32?
-  property xy = [] of Float64
+  @[JSON::Field]
+  property xy : Array(Float64)?
+  @[JSON::Field]
   property hue : Int32?
+  @[JSON::Field]
   property sat : Int32?
+  @[JSON::Field]
   property transition_time : Int32?
+  @[JSON::Field]
   property alert : String?
+  @[JSON::Field]
   property color_mode : String?
+  @[JSON::Field]
   property effect : String?
-  property reachable = false
+  @[JSON::Field]
+  property reachable : Bool?
 
-  def initialize(data : Hash(String, JSON::Any))
-    data = {} of String => JSON::Any if data == nil
-    @reachable = data["reachable"].as_bool
-
-    # bridge returns invaild values for state variables when reachable is false
-    unless @reachable == false
-      @on = data["on"]?.try &.as_bool? || false
-      set_bri data["bri"]?.try &.as_i?
-      set_hue data["hue"]?.try &.as_i?
-      set_sat data["sat"]?.try &.as_i?
-      set_xy data["xy"]?.try &.as_a?
-      set_ct data["ct"]?.try &.as_i?
-      set_alert data["alert"]?.try &.as_s?
-      set_effect data["effect"]?.try &.as_s?
-      set_color_mode data["colormode"]?.try &.as_s?
-      set_transition_time data["transitiontime"]?.try &.as_i?
-    end
+  def initialize(parser)
+    @on = false
+    self.initialize parser
   end
 
   def color_mode=(value)
@@ -201,20 +200,5 @@ class BulbState
     else
       raise BulbStateValueOutOfRangeException.new "XY value out of range. Must be [#{MIN_XY},#{MAX_XY}]. Was #{value.inspect}"
     end
-  end
-
-  def data
-    data = {"on"             => @on,
-            "bri"            => @bri,
-            "hue"            => @hue,
-            "sat"            => @sat,
-            "xy"             => @xy,
-            "ct"             => @ct,
-            "alert"          => @alert,
-            "effect"         => @effect,
-            "colormode"      => @color_mode,
-            "transitiontime" => @transition_time,
-    }
-    data.reject { |k, v| v.nil? }
   end
 end

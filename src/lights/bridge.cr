@@ -1,10 +1,14 @@
 require "json"
 
 class Bridge
-  JSON.mapping(
-    id: String,
-    internalipaddress: String,
-    macaddress: String?,
-    name: String?
-  )
+  include JSON::Serializable
+
+  @[JSON::Field]
+  property id : String
+  @[JSON::Field]
+  property internalipaddress : String
+  @[JSON::Field]
+  property macaddress : String?
+  @[JSON::Field]
+  property name : String?
 end

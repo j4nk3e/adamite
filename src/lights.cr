@@ -4,20 +4,28 @@ require "json"
 require "cli"
 
 require "./lights/bridge"
+require "./lights/bulb"
 require "./lights/exception"
-require "./lights/datastore"
 require "./lights/groupstate"
+require "./lights/group"
+
+# @lights = BulbList.new(data["lights"])
+# @groups = GroupList.new(data["groups"])
+# @config = HueConfig.new(data["config"])
+# @schedules = ScheduleList.new(data["schedules"])
+# @scenes = SceneList.new(data["scenes"])
+# @rules = RuleList.new(data["rules"])
+# @sensors = SensorList.new(data["sensors"])
 
 module Lights
   VERSION = "0.1.0"
 
   class Lights
     def initialize(@address = "https://www.meethue.com", @username = "")
+      @bulbs = {} of String => Bulb
+      @groups = [] of Group
+      @bridges = [] of Bridge
     end
-
-    @bulbs = [] of Bulb
-    @groups = [] of Group
-    @bridges = [] of Bridge
 
     def http
       Crest::Resource.new(@address, headers: {"Content-Type" => "application/json"}, logging: false)
@@ -55,7 +63,7 @@ module Lights
     end
 
     def add_bulb(id, bulb_data)
-      @bulbs << Bulb.new(id, bulb_data)
+      @bulbs[id] = Bulb.from_json bulb_data
     end
 
     def search_new
@@ -63,7 +71,7 @@ module Lights
     end
 
     def request_bulb_list
-      BulbList.new get("lights").as_h
+      Hash(String, Bulb).from_json get("lights")
     end
 
     def request_new_bulb_list
@@ -122,19 +130,19 @@ module Lights
     end
 
     def set_bulb_state(id, state)
-      put "lights/#{id}/state", state.data
+      put "lights/#{id}/state", state.to_json
     end
 
     def set_group_state(id, state)
-      put "groups/#{id}/action", state
+      put "groups/#{id}/action", state.to_json
     end
 
     def create_group(group)
-      post "groups", group
+      post "groups", group.to_json
     end
 
     def create_scene(scene)
-      post "scenes/#{scene.id}", scene
+      post "scenes/#{scene.id}", scene.to_json
     end
 
     def delete_scene(id)
@@ -146,11 +154,11 @@ module Lights
     end
 
     def edit_bulb(bulb)
-      put "lights/#{bulb.id}", bulb
+      put "lights/#{bulb.id}", bulb.to_json
     end
 
     def edit_group(group)
-      put "groups/#{group.id}", group
+      put "groups/#{group.id}", group.to_json
     end
 
     def delete_user(username)
@@ -182,28 +190,27 @@ module Lights
       if (a = result.as_a?) && (h = a.first.as_h?) && h.has_key?("error")
         process_error h
       end
-      result
+      response.body
     end
 
-    private def put(path, data : Hash)
+    private def put(path, data : String)
       raise UsernameException.new unless @username
-      puts data.to_json
-      response = http["/api/#{@username}/#{path}"].put form: data.to_json
+      response = http["/api/#{@username}/#{path}"].put form: data
       result = JSON.parse(response.body)
       if (a = result.as_a?) && (h = a.first.as_h?) && h.has_key?("error")
         process_error h
       end
-      result
+      response.body
     end
 
-    private def post(path, data : Hash)
+    private def post(path, data : String)
       raise UsernameException.new unless @username
-      response = http["/api/#{@username}/#{path}"].post form: data.to_json
+      response = http["/api/#{@username}/#{path}"].post form: data
       result = JSON.parse(response.body)
       if (a = result.as_a?) && (h = a.first.as_h?) && h.has_key?("error")
         process_error h
       end
-      result
+      response.body
     end
 
     private def delete(path)
@@ -213,7 +220,7 @@ module Lights
       if (a = result.as_a?) && (h = a.first.as_h?) && h.has_key?("error")
         process_error result.first
       end
-      result
+      response.body
     end
   end
 
@@ -247,11 +254,12 @@ module Lights
 
     class List < Login
       def run
-        lights.request_bulb_list.each do |bulb|
-          puts "#{bulb.id} #{bulb.name}"
+        lights.request_bulb_list.each do |id, bulb|
+          puts "#{id} #{bulb.name}"
           if bulb.name == "Stehlampe"
-            bulb.state.on = false
-            lights.set_bulb_state bulb.id, bulb.state
+            bulb.state.on = true
+            bulb.state.reachable = nil
+            lights.set_bulb_state id, bulb.state
           end
         end
       end
