@@ -7,8 +7,9 @@ require "./lights/bridge"
 require "./lights/bulb"
 require "./lights/config"
 require "./lights/exception"
-require "./lights/groupstate"
 require "./lights/group"
+require "./lights/scene"
+require "./lights/sensor"
 
 # @lights = BulbList.new(data["lights"])
 # @groups = GroupList.new(data["groups"])
@@ -71,47 +72,44 @@ module Lights
       post "lights"
     end
 
-    def request_bulb_list
+    def request_bulbs
       Hash(String, Bulb).from_json get("lights")
     end
 
-    def request_new_bulb_list
+    def request_new_bulbs
       get "lights/new"
     end
 
-    def request_new_sensor_list
+    def request_new_sensors
       get "sensors/new"
     end
 
     def request_bulb_info(id)
-      response = get "lights/#{id}"
-      Bulb.new(id, response)
+      Bulb.from_json get("lights/#{id}")
     end
 
     def request_group_info(id)
-      response = get "groups/#{id}"
-      Group.new(id, response)
+      Group.from_json get("groups/#{id}")
     end
 
     def request_sensor_info(id)
-      response = get "sensors/#{id}"
-      Sensor.new(id, response)
+      Sensor.from_json get("sensors/#{id}")
     end
 
-    def request_sensor_list
-      get "sensors"
+    def request_sensors
+      Hash(String, Sensor).from_json get("sensors")
     end
 
-    def request_group_list
-      get "groups"
+    def request_groups
+      Hash(String, Group).from_json get("groups")
     end
 
-    def request_schedule_list
+    def request_schedules
       get "schedules"
     end
 
-    def request_scene_list
-      get "scenes"
+    def request_scenes
+      Hash(String, Scene).from_json get("scenes")
     end
 
     def request_rules
@@ -249,9 +247,9 @@ module Lights
       end
     end
 
-    class List < Login
+    class Bulb < Login
       def run
-        lights.request_bulb_list.each do |id, bulb|
+        lights.request_bulbs.each do |id, bulb|
           puts "#{id} #{bulb.name}"
         end
       end
@@ -264,13 +262,42 @@ module Lights
       end
     end
 
+    class Sensor < Login
+      def run
+        sensors = lights.request_sensors
+        puts sensors.to_pretty_json
+      end
+    end
+
+    class Scene < Login
+      class Options
+        string "-s", desc: "Scene to set", default: ""
+      end
+
+      def run
+        if options.s.empty?
+          scenes = lights.request_scenes
+          puts scenes.to_pretty_json
+        else
+          lights.set_group_state(0, SetScene.new options.s)
+        end
+      end
+    end
+
+    class Group < Login
+      def run
+        groups = lights.request_groups
+        puts groups.to_pretty_json
+      end
+    end
+
     class Off < Login
       class Options
         string "-n", desc: "Name of the light"
       end
 
       def run
-        lights.request_bulb_list.each do |id, bulb|
+        lights.request_bulbs.each do |id, bulb|
           puts "#{id} #{bulb.name} #{bulb.state.to_json}"
           if bulb.name.starts_with? options.n
             lights.set_bulb_state id, BulbState.new false
@@ -285,7 +312,7 @@ module Lights
       end
 
       def run
-        lights.request_bulb_list.each do |id, bulb|
+        lights.request_bulbs.each do |id, bulb|
           puts "#{id} #{bulb.name} #{bulb.state.to_json}"
           if bulb.name.starts_with? options.n
             lights.set_bulb_state id, BulbState.new true, options.b.to_i

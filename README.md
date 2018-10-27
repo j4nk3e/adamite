@@ -12,7 +12,10 @@ TODO: Write usage instructions here
 
 ## Development
 
-TODO: Write development instructions here
+* Implement scenes
+* Implement controls
+* Integrate sqlite to save user, config and states
+* Create amber server to control lights via web
 
 ## Contributing
 
