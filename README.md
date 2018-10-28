@@ -1,10 +1,12 @@
-# lights.cr
+# adamite
 
-TODO: Write a description here
+
 
 ## Installation
 
-TODO: Write installation instructions here
+* run `shards install`
+* run `shards build cli`
+* run `bin/cli`
 
 ## Usage
 
@@ -12,11 +14,14 @@ TODO: Write usage instructions here
 
 ## Development
 
-TODO: Write development instructions here
+TODO:
+
+* Implement controls
+* Integrate sqlite to save user, config and states
 
 ## Contributing
 
-1. Fork it (<https://github.com/your-github-user/lights.cr/fork>)
+1. Fork it (<https://github.com/juumixx/adamite/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
@@ -24,4 +29,5 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [your-github-user](https://github.com/your-github-user) juumixx - creator, maintainer
+- [@juumixx](https://github.com/juumixx) juumixx - creator, maintainer
+- Originally started off as a port of the [lights](https://github.com/bradyaturner/lights) library for Ruby by [bradyaturner](https://github.com/bradyaturner)
