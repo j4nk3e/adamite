@@ -2,7 +2,7 @@ class Group
   include JSON::Serializable
 
   @[JSON::Field]
-  property action : BulbState
+  property action : LightState
   @[JSON::Field]
   property name : String
   @[JSON::Field]
@@ -11,7 +11,7 @@ class Group
   property type : String
 end
 
-class GroupState < BulbState
+class GroupState < LightState
   include JSON::Serializable
 
   @[JSON::Field]

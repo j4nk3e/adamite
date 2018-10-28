@@ -10,13 +10,13 @@ class UsernameException < Exception
   end
 end
 
-class BulbStateValueOutOfRangeException < Exception
+class LightStateValueOutOfRangeException < Exception
   def initalize(msg = "Value out of range.")
     super
   end
 end
 
-class BulbStateValueTypeException < Exception
+class LightStateValueTypeException < Exception
   def initialize(msg = "Value is of incorrect type.")
     super
   end
