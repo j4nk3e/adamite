@@ -9,6 +9,7 @@ class AdamiteCli < Cli::Supercommand
       bridges = Adamite.discover
       bridges.each do |bridge|
         begin
+          puts "Registration to #{bridge.internalipaddress}"
           register = bridge.register
           puts "Username: #{register}"
         rescue e : BridgeConnectException

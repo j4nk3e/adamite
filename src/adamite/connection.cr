@@ -17,7 +17,7 @@ module Adamite::Connection
     @[JSON::Field]
     property error : Error?
     @[JSON::Field]
-    property success : User?
+    property success : Success?
   end
 
   def register
@@ -28,9 +28,17 @@ module Adamite::Connection
       if e = r.error
         e.process
       elsif u = r.success
-        return u
+        return u.username
       end
     end
+    raise "Empty response"
+  end
+
+  class Success
+    include JSON::Serializable
+
+    @[JSON::Field]
+    property username : String
   end
 
   class Error
