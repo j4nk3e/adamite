@@ -45,9 +45,9 @@ module Adamite::Connection
     include JSON::Serializable
 
     @[JSON::Field]
-    property description : String
+    property description : String?
     @[JSON::Field]
-    property type : Int32
+    property type : Int32?
 
     def process
       case type
@@ -72,7 +72,7 @@ module Adamite::Connection
     response = http["/api/#{username}/#{path}"].get
     result = JSON.parse(response.body)
     if (a = result.as_a?) && (h = a.first.as_h?) && h.has_key?("error")
-      Error.from_json(h.to_json).process
+      Error.from_json(h["error"].to_json).process
     end
     response.body
   end
@@ -82,7 +82,7 @@ module Adamite::Connection
     response = http["/api/#{username}/#{path}"].put form: data
     result = JSON.parse(response.body)
     if (a = result.as_a?) && (h = a.first.as_h?) && h.has_key?("error")
-      Error.from_json(h.to_json).process
+      Error.from_json(h["error"].to_json).process
     end
     response.body
   end
@@ -92,7 +92,7 @@ module Adamite::Connection
     response = http["/api/#{username}/#{path}"].post form: data
     result = JSON.parse(response.body)
     if (a = result.as_a?) && (h = a.first.as_h?) && h.has_key?("error")
-      Error.from_json(h.to_json).process
+      Error.from_json(h["error"].to_json).process
     end
     response.body
   end
@@ -102,7 +102,7 @@ module Adamite::Connection
     response = http["/api/#{username}/#{path}"].delete
     result = JSON.parse(response.body)
     if (a = result.as_a?) && (h = a.first.as_h?) && h.has_key?("error")
-      Error.from_json(h.to_json).process
+      Error.from_json(h["error"].to_json).process
     end
     response.body
   end

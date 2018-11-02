@@ -29,8 +29,7 @@ class Bridge
     @user.try &.name
   end
 
-  def initialize(@internalipaddress, name : String)
-    @id = "unknown"
+  def initialize(@id, @internalipaddress, name : String)
     @user = User.new name
   end
 
