@@ -33,6 +33,10 @@ class Bridge
     @user = User.new name
   end
 
+  def set_scene(id)
+    set_group_state(0, SetScene.new id)
+  end
+
   def request_config
     @config = HueConfig.from_json get("config")
   end

@@ -28,7 +28,7 @@ class AdamiteCli < Cli::Supercommand
     end
 
     def connection
-      Bridge.new options.a, options.u
+      Bridge.new "unknown", options.a, options.u
     end
   end
 
@@ -64,7 +64,7 @@ class AdamiteCli < Cli::Supercommand
         scenes = connection.request_scenes
         puts scenes.to_pretty_json
       else
-        connection.set_group_state(0, SetScene.new options.s)
+        connection.set_scene options.s
       end
     end
   end
