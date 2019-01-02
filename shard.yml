@@ -19,3 +19,7 @@ dependencies:
   cli:
     github: mosop/cli
 
+development_dependencies:
+  ameba:
+    github: veelenga/ameba
+    version: 0.8.1
